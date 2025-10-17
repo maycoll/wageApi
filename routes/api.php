@@ -30,13 +30,11 @@ Route::post('auth/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::group(['middleware' =>['apiJwt']],
     function() {
 
-        Route::apiResource('usuarios', UsuariosController::class);
-
         Route::post('auth/logout', 'App\Http\Controllers\Api\AuthController@logout');
         Route::get('auth/me', 'App\Http\Controllers\Api\AuthController@me');
 
         Route::apiResource('empresas', EmpresasController::class);
-        //Route::apiResource('usuarios', UsuariosController::class);
+        Route::apiResource('usuarios', UsuariosController::class);
         Route::apiResource('total-vendas-dia', TotalVendasDiaController::class);
         Route::apiResource('vendas-vendedor', VendasVendedorController::class);
         Route::apiResource('liberacao', LiberacaoController::class);
