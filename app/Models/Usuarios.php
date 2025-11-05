@@ -41,8 +41,9 @@ class Usuarios extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        //return ["user" => $this->where('id', $this->id)->first() ];
-        return [];
+        $empresa = Empresas::find(1);
+        return ["cnpj" => $empresa->cnpj ];
+        //return [];
     }
 
     //--------------------------------------

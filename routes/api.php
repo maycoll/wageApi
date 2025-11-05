@@ -5,6 +5,7 @@ use App\Http\Controllers\api\LiberacaoController;
 use App\Http\Controllers\Api\TotalVendasDiaController;
 use App\Http\Controllers\api\UsuariosController;
 use App\Http\Controllers\api\VendasVendedorController;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
+
+
 
 
 

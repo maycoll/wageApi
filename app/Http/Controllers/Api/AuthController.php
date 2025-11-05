@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Empresas;
 use App\Models\Usuarios;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 
 class AuthController extends Controller
@@ -28,26 +32,35 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-//        //verifica a validação dos campos ******************************************
-//        $validator = \Validator::make($request->all(), [
-//            'email' => 'bail|required|email',
-//            'password' => 'bail|required|min:4',
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return fg_response(false, $validator->errors()->toarray(), 'Dados invalidos', 400);
-//        }
-//        //*****************************************************************
+        //verifica a validação dos campos ******************************************
+        $validator = \Validator::make($request->all(), [
+            'email' => 'bail|required|email',
+            'password' => 'bail|required|min:4',
+            'cnpj' => 'bail|required',
+        ]);
+
+        if ($validator->fails()) {
+            return fg_response(false, $validator->errors()->toarray(), 'Dados invalidos', 400);
+        }
+        //*****************************************************************
+
+        $schemaName = $request['cnpj'];
+
+        DB::statement('SET search_path TO '.$schemaName);
+
+        $schemaExists = DB::selectOne("SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = ?)", [$schemaName])->exists;
+
+        if ( (!$schemaExists) || ($schemaName == 'public')) {
+            return fg_response(false, [], 'Login nao autorizado', 401);
+        }
+
 
 
         $credentials = $request->only('email', 'password');
-
         $md5 = md5($credentials['password']);
-
         $credentials['password'] = $md5;
 
-        //$usuario = Usuarios::where('email', $credentials['email'])->where('password', $md5)->first();
-
+        //$usuario = Usuarios::where('email', $credentials['email'])->first();
         //dd($usuario);
 
 
