@@ -22,7 +22,7 @@ class Usuarios extends Authenticatable implements JWTSubject
         'gerente',
         'vendedor',
         'recebe_notificacao',
-        'ultima_notificaca'
+        'ultima_notificacao'
     ];
 
     use HasFactory;

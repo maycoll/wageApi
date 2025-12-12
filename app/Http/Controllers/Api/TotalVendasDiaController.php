@@ -17,8 +17,9 @@ class TotalVendasDiaController extends Controller
         //verifica a validação dos campos ******************************************
 
         $validator = \Validator::make($request->all(), [
-            'mes' => 'bail|required|numeric|min_digits:1|max_digits:2',
-            'ano' => 'bail|required|integer|min_digits:4|max_digits:4',
+            'dia' => 'bail|date|date_format:d/m/Y',
+            'mes' => 'bail|numeric|min_digits:1|max_digits:2',
+            'ano' => 'bail|integer|min_digits:4|max_digits:4',
         ]);
 
         if ($validator->fails()) {
@@ -26,6 +27,11 @@ class TotalVendasDiaController extends Controller
         }
         //***************************************************************************************
 
+        if(isset($request['ano'])){
+            if(isset($request['mes'])) {
+                $totalVendas = TotalVendas::where('ano', $request['ano'])->where('mes', $request['mes'])->get();
+            }
+        }
         $totalVendas = TotalVendas::where('ano',$request['ano'])->where('mes',$request['mes'])->get();
 
         return fg_response(true, $totalVendas->toarray(), 'OK', 200);
