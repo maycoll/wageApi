@@ -2,21 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Models\VendasVendedor;
+use App\Models\TotalVendas;
+use App\Models\VendasClasse;
+use function Faker\Core\randomFloat;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\VendasVendedor>
- */
-class VendasVendedorFactory extends Factory
+
+class VendasClasseFactory extends Factory
 {
-    protected $model = VendasVendedor::class;
+
+    protected $model = VendasClasse::class;
 
     public function definition(): array
     {
         return [
-            'cnpj_empresa' => '39311444000183',
-            'codigo_vendedor' => $this->faker->randomDigit(),
+
+            'cnpj_empresa'  => '39311444000183',
+            'codigo_classe' => $this->faker->randomDigit(),
+            'nome_classe'   => 'NOME CLASSE_'.Str::random(2),
 
             'data' => now(),
             'mes' => '12',
@@ -71,4 +74,9 @@ class VendasVendedorFactory extends Factory
 
         ];
     }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+
 }

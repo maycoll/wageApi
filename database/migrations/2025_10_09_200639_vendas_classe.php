@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('total_vendas', function (Blueprint $table) {
+        Schema::create('vendas_classe', function (Blueprint $table) {
             $table->id();
 
             $table->text('cnpj_empresa')->nullable(false);
+            $table->integer('codigo_classe')->nullable(false);
+            $table->text('nome_classe')->nullable(false);
             $table->timestamp('data')->nullable(true);
             $table->integer('mes')->nullable(false);
             $table->integer('ano')->nullable(false);
@@ -66,8 +68,6 @@ return new class extends Migration
             $table->decimal('dav_faturados_valor')->nullable(true)->default(0);
             $table->decimal('dav_taxa_conver')->nullable(true)->default(0);
             $table->timestamps();
-
-
         });
     }
 
@@ -76,6 +76,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('total_vendas');
+        Schema::dropIfExists('vendas_vendedor');
     }
 };

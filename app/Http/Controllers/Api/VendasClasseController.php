@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Functions\VendasVendedorFunc;
+use App\Functions\VendasClasseFunc;
 use App\Http\Controllers\Controller;
-use App\Models\VendasVendedor;
 use Illuminate\Http\Request;
 
 
-class VendasVendedorController extends Controller
+class VendasClasseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-
-
         //verifica a validação dos campos ******************************************
         $validator = \Validator::make($request->all(), [
             'cnpj_empresa'    => 'bail|numeric|required',
-            'codigo_vendedor' => 'bail|numeric',
+            'codigo_classe'   => 'bail|numeric',
             'ano'             => 'bail|integer|min_digits:4|max_digits:4',
             'mes'             => 'bail|numeric|min_digits:1|max_digits:2',
             'dia'             => 'bail|date|date_format:d/m/Y',
@@ -31,7 +28,7 @@ class VendasVendedorController extends Controller
         }
         //***************************************************************************************
 
-        $totVendaFunc = new VendasVendedorFunc();
+        $totVendaFunc = new VendasClasseFunc();
 
         if(isset($request['ano'])){
             if(isset($request['mes'])){
@@ -61,7 +58,8 @@ class VendasVendedorController extends Controller
         //verifica a validação dos campos ******************************************
 
         $validator = \Validator::make($request->all(), [
-            'codigo_vendedor'     => 'bail|required|numeric',
+            'codigo_classe'       => 'bail|required|numeric',
+            'nome_classe'         => 'bail|required',
             'cnpj_empresa'        => 'bail|required|numeric',
             'ano'                 => 'bail|required|integer|min_digits:4|max_digits:4',
             'mes'                 => 'bail|required|numeric|min_digits:1|max_digits:2',
@@ -113,14 +111,14 @@ class VendasVendedorController extends Controller
         }
         //*****************************************************************
 
-        $totVendaFunc = new VendasVendedorFunc();
+        $totVendaFunc = new VendasClasseFunc();
 
         //verifica se o registro daquele dia ja existe
         if ($totVendaFunc->CheckRegExists($request)){
             return fg_response(false, [], 'Registro para esse dia ja existe. Use PUT para alterar', 400);
         }
 
-        if ($ret = VendasVendedor::create($request->all())) {
+        if ($ret = VendasClasse::create($request->all())) {
             return fg_response(true, $ret->toarray(), 'OK', 200);
         } else {
             return fg_response(false, [], 'Erro interno ao criar', 500);
@@ -132,7 +130,7 @@ class VendasVendedorController extends Controller
      */
     public function show(string $id)
     {
-        if ( (is_numeric($id) == true) && ($venda = VendasVendedor::find($id)) ) {
+        if ( (is_numeric($id) == true) && ($venda = VendasClasse::find($id)) ) {
             return fg_response(true, $venda->toarray(), 'OK', 200);
         }else{
             return fg_response(false, [], 'Registro nao encontrado', 400);
@@ -145,7 +143,8 @@ class VendasVendedorController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = \Validator::make($request->all(), [
-            'codigo_vendedor'     => 'bail|numeric',
+            'codigo_classe'       => 'bail|numeric',
+            'nome_classe'         => 'bail|required',
             'cnpj_empresa'        => 'bail|numeric',
             'ano'                 => 'bail|integer|min_digits:4|max_digits:4',
             'mes'                 => 'bail|numeric|min_digits:1|max_digits:2',
@@ -197,7 +196,7 @@ class VendasVendedorController extends Controller
         }
         //*****************************************************************
 
-        if ( (is_numeric($id) == true) && ($venda = VendasVendedor::find($id)) ) {
+        if ( (is_numeric($id) == true) && ($venda = VendasClasse::find($id)) ) {
             if ($venda->update($request->all()) ) {
                 return fg_response(true, $venda->toarray(), 'OK', 200);
             }
@@ -211,7 +210,7 @@ class VendasVendedorController extends Controller
      */
     public function destroy(string $id)
     {
-        if ( (is_numeric($id) == true) && ($venda = VendasVendedor::find($id)) ) {
+        if ( (is_numeric($id) == true) && ($venda = VendasClasse::find($id)) ) {
             if ($venda->delete() ) {
                 return fg_response(true, [], 'Registro * '.$id.' * removido', 200);
             }

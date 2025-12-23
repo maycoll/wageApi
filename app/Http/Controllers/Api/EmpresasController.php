@@ -13,8 +13,19 @@ class EmpresasController extends Controller
      */
     public function index(Request $request)
     {
+        //verifica a validação dos campos ******************************************
+        $validator = \Validator::make($request->all(), [
+            'cnpj' => 'numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return fg_response(false, $validator->errors()->toarray(), 'Dados invalidos', 400);
+        }
+        //*****************************************************************
+
+
         if(isset($request['cnpj'])){
-            if($empresas = Empresas::where('cnpj',$request['cnpj'])->get()){
+            if($empresas = Empresas::where('cnpj', $request['cnpj'])->get()){
                 return fg_response(true, $empresas->toarray(), 'OK', 200);
             }else{
                 return fg_response(false, [], 'Registro nao encontrado', 400);
@@ -22,10 +33,8 @@ class EmpresasController extends Controller
         }else {
             $empresas = Empresas::all();
             return fg_response(true, $empresas->toarray(), 'OK', 200);
-
         }
 
-        //return fg_response(false, [], 'ERRO', 403);
     }
 
     /**

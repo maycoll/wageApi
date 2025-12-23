@@ -2,21 +2,35 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Functions\UsuariosFunction;
 use App\Http\Controllers\Controller;
 use App\Models\Usuarios;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
+
+
 
 class UsuariosController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $usuarios = Usuarios::all();
-        return fg_response(true, $usuarios->toarray(), 'OK', 200);
-        //return fg_response(false, [], 'ERRO', 403);
+        //verifica a validação dos campos ******************************************
+        $validator = \Validator::make($request->all(), [
+            'cnpj_empresa' => 'numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return fg_response(false, $validator->errors()->toarray(), 'Dados invalidos', 400);
+        }
+        //*****************************************************************
+
+        $userFunc = new UsuariosFunction();
+
+        $usuarios = $userFunc->AllUser($request);
+
+        return fg_response(true, $usuarios, 'OK', 200);
 
     }
 
@@ -28,6 +42,7 @@ class UsuariosController extends Controller
         //verifica a validação dos campos ******************************************
 
         $validator = \Validator::make($request->all(), [
+            'cnpj_empresa'       => 'bail|required|numeric',
             'codigo_usuario'     => 'bail|required|numeric',
             'codigo_vendedor'    => 'numeric',
             'nome'               => 'bail|required|min:3',
@@ -38,7 +53,6 @@ class UsuariosController extends Controller
             'gerente'            => ['bail','required','regex:/^(S|N)$/i'],
             'vendedor'           => ['bail','required','regex:/^(S|N)$/i'],
             'recebe_notificacao' => ['bail','required','regex:/^(S|N)$/i'],
-
         ]);
 
         if ($validator->fails()) {
@@ -46,9 +60,11 @@ class UsuariosController extends Controller
         }
         //*****************************************************************
 
+        $userFunc = new UsuariosFunction();
+
         //verifica se o usuario ja existe
-        if($usuario = Usuarios::where('email',$request['email'])->first()){
-            return fg_response(false, $usuario->toarray(), 'Email de usuario ja cadastrado', 400);
+        if($userFunc->CheckUserExists($request['email'])){
+            return fg_response(false, [], 'Email de usuário ja cadastrado', 400);
         }
 
         $request['password'] = bcrypt($request['password']);
@@ -67,14 +83,11 @@ class UsuariosController extends Controller
      */
     public function show(string $id)
     {
-        //return fg_response(false, [], 'ERRO', 403);
-
-        if ( (is_numeric($id) == true) && ($usuario = Usuarios::find($id)) ) {
+        if ( (is_numeric($id) == true) && ($usuario = Usuarios::where('id',$id)->with('empresa')->get()) ) {
             return fg_response(true, $usuario->toarray(), 'OK', 200);
         }else{
             return fg_response(false, [], 'Registro nao encontrado', 400);
         }
-
     }
 
     /**
@@ -83,6 +96,7 @@ class UsuariosController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = \Validator::make($request->all(), [
+            'cnpj_empresa'       => 'numeric',
             'codigo_usuario'     => 'numeric',
             'codigo_vendedor'    => 'numeric',
             'nome'               => 'min:3',

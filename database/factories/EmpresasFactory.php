@@ -19,7 +19,7 @@ class EmpresasFactory extends Factory
         $fantasia = 'Empresa Fantasia'.Str::random(2);
 
         return [
-            'cnpj' => $this->faker->numerify('##############'),
+            'cnpj' => '39311444000183', //$this->faker->numerify('##############'),
             'razao' => $razao,
             'fantasia' => $fantasia,
 

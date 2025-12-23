@@ -24,10 +24,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        TotalVendas::factory(10)->create();
+        Empresas::factory(2)->create();
         Usuarios::factory(10)->create();
+
+        TotalVendas::factory(10)->create();
         VendasVendedor::factory(10)->create();
-        Empresas::factory(10)->create();
-        Liberacao::factory(10)->create();
+
+        //Liberacao::factory(10)->create();
     }
 }

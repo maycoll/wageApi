@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\api\EmpresasController;
 use App\Http\Controllers\api\LiberacaoController;
-use App\Http\Controllers\Api\TotalVendasDiaController;
+use App\Http\Controllers\Api\TotalVendasController;
 use App\Http\Controllers\api\UsuariosController;
+use App\Http\Controllers\api\VendasClasseController;
 use App\Http\Controllers\api\VendasVendedorController;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\Request;
@@ -38,9 +39,10 @@ Route::group(['middleware' =>['apiJwt']],
 
         Route::apiResource('empresas', EmpresasController::class);
         Route::apiResource('usuarios', UsuariosController::class);
-        Route::apiResource('total-vendas-dia', TotalVendasDiaController::class);
+        Route::apiResource('total-vendas', TotalVendasController::class);
         Route::apiResource('vendas-vendedor', VendasVendedorController::class);
-        Route::apiResource('liberacao', LiberacaoController::class);
+        Route::apiResource('vendas-classe', VendasClasseController::class);
+        //Route::apiResource('liberacao', LiberacaoController::class);
 
 
     }

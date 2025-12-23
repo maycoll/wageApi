@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -12,8 +13,11 @@ class Usuarios extends Authenticatable implements JWTSubject
 
     protected $fillable = [
         'id',
+
+        'cnpj_empresa',
         'codigo_usuario',
         'codigo_vendedor',
+
         'nome',
         'email',
         'password',
@@ -22,12 +26,15 @@ class Usuarios extends Authenticatable implements JWTSubject
         'gerente',
         'vendedor',
         'recebe_notificacao',
-        'ultima_notificacao'
     ];
 
     use HasFactory;
 
     protected $hidden = ['password' ];
+
+    public function empresa(): HasOne{
+        return $this->hasOne(Empresas::class, 'cnpj', 'cnpj_empresa');
+    }
 
     public function getJWTIdentifier()
     {

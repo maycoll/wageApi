@@ -18,6 +18,7 @@ class UsuariosFactory extends Factory
         $usuario = 'usuario'.Str::random(2);
 
         return [
+            'cnpj_empresa' => '39311444000183',
             'codigo_usuario' => $this->faker->randomDigit(),
             'codigo_vendedor' => $this->faker->randomDigit(),
             'nome' => $usuario,
@@ -28,7 +29,7 @@ class UsuariosFactory extends Factory
             'gerente' => 'S',
             'vendedor' => 'S',
             'recebe_notificacao' => 'S',
-            //'ultima_notificacao' => '1',
+
         ];
     }
 

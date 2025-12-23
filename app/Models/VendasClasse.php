@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TotalVendas extends Model
+class VendasClasse extends Model
 {
-    protected $table = 'total_vendas';
+    protected $table = 'vendas_classe';
 
     protected $fillable = [
         'id',
         'data',
         'mes',
         'ano',
-      
-        'cnpj_empresa',        //cnpj da empresa que pertence o registro
+
+        'cnpj_empresa',        // cnpj da empresa que pertence o registro
+        'codigo_classe',        // codigo classe alfa
+        'nome_classe',        // codigo classe alfa
 
         'vendas_quant',        // numero de vendas ocorridas nesta data
         'vendas_bruto',        // (somente vendas)
@@ -56,10 +58,6 @@ class TotalVendas extends Model
         'dav_faturados',       // numero orçamentos convertidos em venda nesta data
         'dav_faturados_valor', // valor total de dav faturados nesta data
         'dav_taxa_conver',     // % de atendimento convertido em vendas (dav_faturados + vendas que não foram originadas de davs) / (num_dav_faturados + num_dav_incluidos + num_dav_perdidos - num_vendas) (da mesma data)cientes_quant       //
-
-
-
-
     ];
 
     use HasFactory;
