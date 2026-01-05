@@ -12,7 +12,62 @@ use Illuminate\Http\Request;
 class TotalVendasController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     path="/api/total-vendas",
+     *     summary="Retorna a lista de registro de vendas por periodo",
+     *     description="Retorna a lista de registro de vendas por periodo, usando como parametro de pesquisa o cnpj_empresa / ano / mes / dia ",
+     *     tags={"TotalVendas"},
+     *     operationId="totVendIndex",
+     * @OA\Parameter(
+     *    name="cnpj_empresa",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Cnpj da empresa ao qual o registro pertence - orbigatorio",
+     *    required=true,
+     * ),
+     * @OA\Parameter(
+     *    name="ano",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando somente este campos esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Parameter(
+     *    name="mes",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando o campo |Ano| tambem esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Parameter(
+     *    name="dia",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando somente este campos esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Response(
+     *    response=200 ,
+     *    description="Retorna a lista de registros",
+     *    @OA\JsonContent(
+     *        ref="#/components/schemas/TotalVendasWithDate"
+     *    )
+     * ),
+     * @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
      */
     public function index(Request $request)
     {
@@ -33,28 +88,42 @@ class TotalVendasController extends Controller
 
         $totVendaFunc = new TotalVendasFunction();
 
-        if(isset($request['ano'])){
-            if(isset($request['mes'])){
-                //get ano mes
-                $totalVendas = $totVendaFunc->GetMes($request);
-            }else{
-                //get ano
-                $totalVendas = $totVendaFunc->GetAno($request);
-            }
-        }else{
-            if(isset($request['dia'])){
-                //get dia
-                $totalVendas = $totVendaFunc->GetDia($request);
-            }else{
-                return fg_response(false, [], 'Nenhuma opção de data informada', 400);
-            }
-        }
-
+        $totalVendas = $totVendaFunc->GetTotalVendas($request);
 
         return fg_response(true, $totalVendas->toarray(), 'OK', 200);
     }
 
 
+    /**
+     *
+     * @OA\Post(
+     *     path="/api/total-vendas",
+     *     summary="Insere o registro no sistema",
+     *     description="",
+     *     tags={"TotalVendas"},
+     *     operationId="totVendStore",
+     *      @OA\RequestBody(
+     *         required=true,
+     *         description="Request Body Description",
+     *         @OA\JsonContent(
+     *              allOf={
+     *                @OA\Schema(ref="#/components/schemas/TotalVendas"),
+     *                },
+     *         )
+     *     ),
+     *     @OA\Response(
+     *        response=200 ,
+     *        description="Retorna registro inserido",
+     *        @OA\JsonContent(
+     *            ref="#/components/schemas/TotalVendasWithDate"
+     *        )
+     *     ),
+     *     @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     * )
+     */
     public function store(Request $request)
     {
         //verifica a validação dos campos ******************************************
@@ -127,10 +196,39 @@ class TotalVendasController extends Controller
 
     }
 
-
+    /**
+     *
+     * @OA\Get(
+     *     path="/api/total-vendas/{id}",
+     *     summary="Retorna o registro",
+     *     description="Retorna o registro, usando como parametro o id",
+     *     tags={"TotalVendas"},
+     *     operationId="totVendShow",
+     *  @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *  ),
+     * @OA\Response(
+     *    response=200 ,
+     *    description="Retorna o registro",
+     *    @OA\JsonContent(
+     *        ref="#/components/schemas/TotalVendasWithDate"
+     *    )
+     * ),
+     * @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
+     */
     public function show(string $id)
     {
-        if ( (is_numeric($id) == true) && ($totalVendas = TotalVendas::find($id)) ) {
+        $totVendaFunc = new TotalVendasFunction();
+
+        if ( (is_numeric($id) == true) && ($totalVendas = $totVendaFunc->GetID($id)) ) {
             return fg_response(true, $totalVendas->toarray(), 'OK', 200);
         }else{
             return fg_response(false, [], 'Registro nao encontrado', 400);
@@ -139,7 +237,45 @@ class TotalVendasController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     *
+     * @OA\Put(
+     *     path="/api/total-vendas/{id}",
+     *     summary="Edita o registro",
+     *     description="Edita o registro selecionado, usando como parametro o id",
+     *     tags={"TotalVendas"},
+     *     operationId="totVendUpdate",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *      ),
+     *      @OA\RequestBody(
+     *         required=true,
+     *         description="Request Body Description",
+     *         @OA\JsonContent(
+     *              allOf={
+     *                @OA\Schema(ref="#/components/schemas/TotalVendas"),
+     *                },
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Retorna o registro alterado",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/TotalVendasWithDate",
+     *         )
+     *     ),
+     *    @OA\Response(
+     *         response=404 ,
+     *         description="Registro nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500 ,
+     *         description="Erro interno do servidor"
+     *     ),
+     *    security={{ "bearer": {} }},
+     * )
      */
     public function update(Request $request, string $id)
     {
@@ -207,7 +343,33 @@ class TotalVendasController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *     path="/api/total-vendas/{id}",
+     *     summary="Remove o registro",
+     *     description="Remove o registro selecionado, usando como parametro o id",
+     *     tags={"TotalVendas"},
+     *     operationId="totVendDestroy",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *      ),
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Registro excluido com sucesso",
+     *     ),
+     *    @OA\Response(
+     *         response=404 ,
+     *         description="Registro nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500 ,
+     *         description="Erro interno do servidor"
+     *     ),
+     *    security={{ "bearer": {} }},
+     * )
      */
     public function destroy(string $id)
     {

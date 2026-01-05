@@ -25,9 +25,41 @@ class AuthController extends Controller
     }
 
     /**
-     * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     operationId="login",
+     * @OA\Parameter(
+     *         name="email",
+     *         in="query",
+     *         description="email",
+     *         required=true,
+     *      ),
+     * @OA\Parameter(
+     *         name="password",
+     *         in="query",
+     *         description="senha",
+     *         required=true,
+     *      ),
+     * @OA\Parameter(
+     *         name="cnpj",
+     *         in="query",
+     *         description="cnpj",
+     *         required=true,
+     *      ),
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Retorna o usuarios logado encapsulado no payload do JWT",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Usuarios"
+     *         )
+     *     ),
+     * *     @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     * )
      */
     public function login(Request $request)
     {
@@ -73,9 +105,24 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/auth/me",
+     *     tags={"Auth"},
+     *     operationId="me",
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Retorna o usuarios logado",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/Usuarios"
+     *         )
+     *     ),
+     * *     @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado",
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
      */
     public function me()
     {
@@ -87,15 +134,33 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     tags={"Auth"},
+     *     operationId="logout",
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Realiza ou logout do usuario",
+     *     ),
+     *     @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
+     *
      */
     public function logout()
     {
-        auth()->logout();
 
-        return fg_response(true,[],'Logout realizado com sucesso',200);
+        $guard = $this->guard();
+
+        if ( isset($guard)) {
+            auth()->logout();
+
+            return fg_response(true, [], 'Logout realizado com sucesso', 200);
+        }
     }
 
     /**
@@ -117,11 +182,24 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
+        $userLogado = Usuarios::where('id', Auth::id())->first(['id', 'nome', 'email','codigo_usuario','codigo_vendedor']);
+
+//        return response()->json([
+//            'access_token' => $token,
+//            'token_type' => 'bearer',
+//            'expires_in' => auth()->factory()->getTTL() * 60,
+//            'usuario' => $userLogado
+//        ]);
+
+        return fg_response(true,
+            [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60,
+                'usuario' => $userLogado
+            ],
+            'Usuario logado', 200);
+
     }
 
     public function guard()

@@ -15,8 +15,40 @@ class VendasClasseFunc
     public function CheckRegExists(Request $request){
         return ($totVendaClasse = VendasClasse::where('codigo_classe', $request['codigo_classe'])
             ->where('cnpj_empresa',$request['cnpj_empresa'])
-            ->where('data', $request['data'])
+            ->where('data', "'".$request['data']."'")
             ->first()) ;
+    }
+
+    public function GetID(string $id){
+
+        $user = VendasClasse::where('id', $id)
+                              ->get();
+
+        return $user;
+
+    }
+
+
+    public function GetVendasClasse(Request $request){
+
+        if(isset($request['ano'])){
+            if(isset($request['mes'])){
+                //get ano mes
+                $totalVendas = $this->GetMes($request);
+            }else{
+                //get ano
+                $totalVendas = $this->GetAno($request);
+            }
+        }else{
+            if(isset($request['dia'])){
+                //get dia
+                $totalVendas = $this->GetDia($request);
+            }else{
+                $totalVendas = new VendasClasse();
+            }
+        }
+
+        return $totalVendas;
     }
 
 
@@ -147,8 +179,8 @@ class VendasClasseFunc
         }
 
         $totVendaClasse = VendasClasse::whereRaw('codigo_classe like '.$like)
-                                            ->where('cnpj_emprsa', $request['cnpj_empresa'])
-                                            ->where('dia', $request['dia'])
+                                            ->where('cnpj_empresa', $request['cnpj_empresa'])
+                                            ->where('data', "'".$request['data']."'")
                                             ->get();
 
         return $totVendaClasse;

@@ -34,8 +34,8 @@ Route::post('auth/login', 'App\Http\Controllers\Api\AuthController@login');
 Route::group(['middleware' =>['apiJwt']],
     function() {
 
-        Route::post('auth/logout', 'App\Http\Controllers\Api\AuthController@logout');
         Route::get('auth/me', 'App\Http\Controllers\Api\AuthController@me');
+        Route::post('auth/logout', 'App\Http\Controllers\Api\AuthController@logout');
 
         Route::apiResource('empresas', EmpresasController::class);
         Route::apiResource('usuarios', UsuariosController::class);

@@ -11,11 +11,73 @@ use Illuminate\Http\Request;
 class VendasVendedorController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *     path="/api/vendas-vendedor",
+     *     summary="Retorna a lista de registro de vendas por vendedor",
+     *     description="Retorna a lista de registro de vendas por vendedor, usando como parametro de pesquisa o cnpj_empresa / codigo_vendedor / ano / mes / dia ",
+     *     tags={"VendasVendedor"},
+     *     operationId="totVendVendeIndex",
+     * @OA\Parameter(
+     *    name="cnpj_empresa",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Cnpj da empresa ao qual o registro pertence - orbigatorio",
+     *    required=true,
+     * ),
+     * @OA\Parameter(
+     *    name="codigo_vendedor",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Codigo do vendedor ao qual o registro pertence",
+     * ),
+     * @OA\Parameter(
+     *    name="ano",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando somente este campos esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Parameter(
+     *    name="mes",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando o campo |Ano| tambem esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Parameter(
+     *    name="dia",
+     *    in="query",
+     *    @OA\Schema(
+     *      type="string"
+     *    ),
+     *    description="Usado para pesquisa quando somente este campos esta preenchido",
+     *    required=false,
+     * ),
+     * @OA\Response(
+     *    response=200 ,
+     *    description="Retorna a lista de registros",
+     *    @OA\JsonContent(
+     *        ref="#/components/schemas/VendasVendedorWithDate"
+     *    )
+     * ),
+     * @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
      */
     public function index(Request $request)
     {
-
 
         //verifica a validação dos campos ******************************************
         $validator = \Validator::make($request->all(), [
@@ -31,30 +93,42 @@ class VendasVendedorController extends Controller
         }
         //***************************************************************************************
 
-        $totVendaFunc = new VendasVendedorFunc();
+        $totVendaVendeFunc = new VendasVendedorFunc();
 
-        if(isset($request['ano'])){
-            if(isset($request['mes'])){
-                //get ano mes
-                $totalVendas = $totVendaFunc->GetMes($request);
-            }else{
-                //get ano
-                $totalVendas = $totVendaFunc->GetAno($request);
-            }
-        }else{
-            if(isset($request['dia'])){
-                //get dia
-                $totalVendas = $totVendaFunc->GetDia($request);
-            }else{
-                return fg_response(false, [], 'Nenhuma opção de data informada', 400);
-            }
-        }
+        $totalVendas = $totVendaVendeFunc->GetMes($request);
 
         return fg_response(true, $totalVendas->toarray(), 'OK', 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *     path="/api/vendas-vendedor",
+     *     summary="Insere o registro no sistema",
+     *     description="",
+     *     tags={"VendasVendedor"},
+     *     operationId="totVendVendeStore",
+     *      @OA\RequestBody(
+     *         required=true,
+     *         description="Request Body Description",
+     *         @OA\JsonContent(
+     *              allOf={
+     *                @OA\Schema(ref="#/components/schemas/VendasVendedor"),
+     *                },
+     *         )
+     *     ),
+     *     @OA\Response(
+     *        response=200 ,
+     *        description="Retorna registro inserido",
+     *        @OA\JsonContent(
+     *            ref="#/components/schemas/VendasVendedorWithDate"
+     *        )
+     *     ),
+     *     @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     * )
      */
     public function store(Request $request)
     {
@@ -113,10 +187,10 @@ class VendasVendedorController extends Controller
         }
         //*****************************************************************
 
-        $totVendaFunc = new VendasVendedorFunc();
+        $totVendaVendeFunc = new VendasVendedorFunc();
 
         //verifica se o registro daquele dia ja existe
-        if ($totVendaFunc->CheckRegExists($request)){
+        if ($totVendaVendeFunc->CheckRegExists($request)){
             return fg_response(false, [], 'Registro para esse dia ja existe. Use PUT para alterar', 400);
         }
 
@@ -128,11 +202,38 @@ class VendasVendedorController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     *
+     * @OA\Get(
+     *     path="/api/vendas-vendedor/{id}",
+     *     summary="Retorna o registro",
+     *     description="Retorna o registro, usando como parametro o id",
+     *     tags={"VendasVendedor"},
+     *     operationId="totVendVendeShow",
+     *  @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *  ),
+     * @OA\Response(
+     *    response=200 ,
+     *    description="Retorna o registro",
+     *    @OA\JsonContent(
+     *        ref="#/components/schemas/VendasVendedorWithDate"
+     *    )
+     * ),
+     * @OA\Response(
+     *         response=401 ,
+     *         description="login nao autorizado"
+     *     ),
+     *   security={{ "bearer": {} }},
+     * )
      */
     public function show(string $id)
     {
-        if ( (is_numeric($id) == true) && ($venda = VendasVendedor::find($id)) ) {
+        $totVendaVendeFunc = new VendasVendedorFunc();
+
+        if ( (is_numeric($id) == true) && ($venda = $totVendaVendeFunc->GetID($id)) ) {
             return fg_response(true, $venda->toarray(), 'OK', 200);
         }else{
             return fg_response(false, [], 'Registro nao encontrado', 400);
@@ -140,7 +241,45 @@ class VendasVendedorController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     *
+     * @OA\Put(
+     *     path="/api/vendas-vendedor/{id}",
+     *     summary="Edita o registro",
+     *     description="Edita o registro selecionado, usando como parametro o id",
+     *     tags={"VendasVendedor"},
+     *     operationId="totVendVendeUpdate",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *      ),
+     *      @OA\RequestBody(
+     *         required=true,
+     *         description="Request Body Description",
+     *         @OA\JsonContent(
+     *              allOf={
+     *                @OA\Schema(ref="#/components/schemas/VendasVendedor"),
+     *                },
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Retorna o registro alterado",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/VendasVendedorWithDate",
+     *         )
+     *     ),
+     *    @OA\Response(
+     *         response=404 ,
+     *         description="Registro nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500 ,
+     *         description="Erro interno do servidor"
+     *     ),
+     *    security={{ "bearer": {} }},
+     * )
      */
     public function update(Request $request, string $id)
     {
@@ -197,7 +336,9 @@ class VendasVendedorController extends Controller
         }
         //*****************************************************************
 
-        if ( (is_numeric($id) == true) && ($venda = VendasVendedor::find($id)) ) {
+        $totVendaVendeFunc = new VendasVendedorFunc();
+
+        if ( (is_numeric($id) == true) && ($venda = $totVendaVendeFunc->GetID($id)) ) {
             if ($venda->update($request->all()) ) {
                 return fg_response(true, $venda->toarray(), 'OK', 200);
             }
@@ -207,7 +348,33 @@ class VendasVendedorController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *     path="/api/vendas-vendedor/{id}",
+     *     summary="Remove o registro",
+     *     description="Remove o registro selecionado, usando como parametro o id",
+     *     tags={"VendasVendedor"},
+     *     operationId="totVendVendeDestroy",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id",
+     *         required=true,
+     *      ),
+     *     @OA\Response(
+     *         response=200 ,
+     *         description="Registro excluido com sucesso",
+     *     ),
+     *    @OA\Response(
+     *         response=404 ,
+     *         description="Registro nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=500 ,
+     *         description="Erro interno do servidor"
+     *     ),
+     *    security={{ "bearer": {} }},
+     * )
      */
     public function destroy(string $id)
     {

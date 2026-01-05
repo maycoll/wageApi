@@ -14,9 +14,41 @@ class TotalVendasFunction
 {
 
     public function CheckRegExists(Request $request){
-        return ($totVenda = TotalVendas::where('data', $request['data'])
-                                        ->where('cnpj_empresa',$request['cnpj_empresa'])
+        return ($totVenda = TotalVendas::where('cnpj_empresa',$request['cnpj_empresa'])
+                                        ->where('data', "'".$request['data']."'")
                                         ->first()) ;
+    }
+
+    public function GetTotalVendas(Request $request){
+
+        if(isset($request['ano'])){
+            if(isset($request['mes'])){
+                //get ano mes
+                $totalVendas = $this->GetMes($request);
+            }else{
+                //get ano
+                $totalVendas = $this->GetAno($request);
+            }
+        }else{
+            if(isset($request['dia'])){
+                //get dia
+                $totalVendas = $this->GetDia($request);
+            }else{
+                $totalVendas = new TotalVendas();
+            }
+        }
+
+        return $totalVendas;
+
+    }
+
+    public function GetID(string $id){
+
+        $user = TotalVendas::where('id', $id)
+                            ->get();
+
+        return $user;
+
     }
 
 
@@ -63,10 +95,10 @@ class TotalVendasFunction
         $sql .= 'sum(dav_taxa_conver) as dav_taxa_conver';
 
 
-        $totalVendas = TotalVendas::selectRaw('cnpj_empresa, codigo_vendedor, ano,'.$sql)
+        $totalVendas = TotalVendas::selectRaw('cnpj_empresa,  ano,'.$sql)
                                     ->whereRaw('cnpj_empresa = '."'".$request['cnpj_empresa']."'")
                                     ->whereRaw('ano = '.$request['ano'])
-                                    ->groupByRaw('cnpj_empresa, codigo_vendedor, ano')
+                                    ->groupByRaw('cnpj_empresa,  ano')
                                     ->get();
 
         return $totalVendas;
@@ -116,11 +148,11 @@ class TotalVendasFunction
         $sql .= 'sum(dav_taxa_conver) as dav_taxa_conver';
 
 
-        $totalVendas = TotalVendas::selectRaw('cnpj_empresa, codigo_vendedor, ano, mes,'.$sql)
+        $totalVendas = TotalVendas::selectRaw('cnpj_empresa,  ano, mes,'.$sql)
                                     ->whereRaw('cnpj_empresa = '."'".$request['cnpj_empresa']."'")
                                     ->whereRaw('ano = '.$request['ano'])
                                     ->whereRaw('mes = '.$request['mes'])
-                                    ->groupByRaw('cnpj_empresa, codigo_vendedor, ano, mes')
+                                    ->groupByRaw('cnpj_empresa,  ano, mes')
                                     ->get();
 
         return $totalVendas;
@@ -128,8 +160,8 @@ class TotalVendasFunction
 
 
     public function GetDia(Request $request){
-        $totalVendas = TotalVendas::where('cnpj_emprsa', $request['cnpj_empresa'])
-                                    ->where('dia', $request['dia'])
+        $totalVendas = TotalVendas::where('cnpj_empresa', $request['cnpj_empresa'])
+                                    ->where('data', "'".$request['data']."'")
                                     ->get();
 
         return $totalVendas;

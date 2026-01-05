@@ -19,6 +19,35 @@ class VendasVendedorFunc
             ->first()) ;
     }
 
+    public function GetID(string $id){
+
+        $user = VendasVendedor::where('id', $id)
+            ->get();
+
+        return $user;
+
+    }
+
+    public function GetVendasVendedor(Request $request){
+        if(isset($request['ano'])){
+            if(isset($request['mes'])){
+                //get ano mes
+                $totalVendas = $this->GetMes($request);
+            }else{
+                //get ano
+                $totalVendas = $this->GetAno($request);
+            }
+        }else{
+            if(isset($request['dia'])){
+                //get dia
+                $totalVendas = $this->GetDia($request);
+            }else{
+                $totalVendas = new VendasVendedor();
+            }
+        }
+
+        return $totalVendas;
+    }
 
     public function GetAno(Request $request){
 
@@ -149,7 +178,7 @@ class VendasVendedorFunc
 
         $totVendaVendedor = VendasVendedor::whereRaw('codigo_vendedor::text like '.$like)
                                             ->where('cnpj_empresa', "'".$request['cnpj_empresa']."'")
-                                            ->where('dia', $request['dia'])
+                                            ->where('dia', "'".$request['dia']."'")
                                             ->get();
 
         return $totVendaVendedor;

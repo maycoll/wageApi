@@ -26,7 +26,6 @@ class apiProtectedRoute extends BaseMiddleware
             $schema = JWTAuth::parseToken()->getPayload()->get('cnpj');
             DB::statement('SET search_path TO '.$schema);
 
-
             $user = JWTAuth::parseToken()->authenticate();
 
 

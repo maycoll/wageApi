@@ -1,0 +1,3209 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "WAGE - API BI",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "email",
+                        "required": true
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "senha",
+                        "required": true
+                    },
+                    {
+                        "name": "cnpj",
+                        "in": "query",
+                        "description": "cnpj",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna o usuarios logado encapsulado no payload do JWT",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Usuarios"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "Retorna o usuarios logado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Usuarios"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Realiza ou logout do usuario"
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/empresas": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Retorna a lista de empresas",
+                "description": "Retorna a lista de empresas, usando como parametro de pesquisa o cnpj / razao / fantasia",
+                "operationId": "empIndex",
+                "parameters": [
+                    {
+                        "name": "cnpj",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "razao",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fantasia",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de empresas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmpresasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Insere a empresa no sistema",
+                "description": "",
+                "operationId": "empStore",
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Empresas"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna a empresas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmpresasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{id}": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Retorna a empresa",
+                "description": "Retorna a empresa, usando como parametro o id",
+                "operationId": "empShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a empresas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmpresasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Edita a empresa",
+                "description": "Edita e empresa selecionada, usando como parametro o id",
+                "operationId": "empUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Empresas"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna a empresa alterada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmpresasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa nao encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Remove a empresa",
+                "description": "Remove e empresa selecionada, usando como parametro o id",
+                "operationId": "empDestroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa excluida com sucesso"
+                    },
+                    "404": {
+                        "description": "Empresa nao encontrada"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/total-vendas": {
+            "get": {
+                "tags": [
+                    "TotalVendas"
+                ],
+                "summary": "Retorna a lista de registro de vendas por periodo",
+                "description": "Retorna a lista de registro de vendas por periodo, usando como parametro de pesquisa o cnpj_empresa / ano / mes / dia ",
+                "operationId": "totVendIndex",
+                "parameters": [
+                    {
+                        "name": "cnpj_empresa",
+                        "in": "query",
+                        "description": "Cnpj da empresa ao qual o registro pertence - orbigatorio",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ano",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "mes",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando o campo |Ano| tambem esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dia",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de registros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TotalVendasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "TotalVendas"
+                ],
+                "summary": "Insere o registro no sistema",
+                "description": "",
+                "operationId": "totVendStore",
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/TotalVendas"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna registro inserido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TotalVendasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/total-vendas/{id}": {
+            "get": {
+                "tags": [
+                    "TotalVendas"
+                ],
+                "summary": "Retorna o registro",
+                "description": "Retorna o registro, usando como parametro o id",
+                "operationId": "totVendShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TotalVendasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "TotalVendas"
+                ],
+                "summary": "Edita o registro",
+                "description": "Edita o registro selecionado, usando como parametro o id",
+                "operationId": "totVendUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/TotalVendas"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro alterado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TotalVendasWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "TotalVendas"
+                ],
+                "summary": "Remove o registro",
+                "description": "Remove o registro selecionado, usando como parametro o id",
+                "operationId": "totVendDestroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registro excluido com sucesso"
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/usuarios": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Retorna a lista de usuarios",
+                "description": "Retorna a lista de usuarios, usando como parametro de pesquisa o cnpj_empresa / email / nome / codigo_usuario ",
+                "operationId": "userIndex",
+                "parameters": [
+                    {
+                        "name": "cnpj_empresa",
+                        "in": "query",
+                        "description": "Cnpj da empresa ao qual o usuario pertence - orbigatorio",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nome",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "codigo_usuario",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de empresas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuariosWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Insere o usuario no sistema",
+                "description": "",
+                "operationId": "userStore",
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Usuarios"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuariosWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/{id}": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Retorna o usuario",
+                "description": "Retorna ousuario, usando como parametro o id",
+                "operationId": "userShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna o usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuariosWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Remove o usuario",
+                "description": "Remove o usuario selecionado, usando como parametro o id",
+                "operationId": "userDestroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario excluido com sucesso"
+                    },
+                    "404": {
+                        "description": "Usuario nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/usuario/{id}": {
+            "put": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Edita o usuario",
+                "description": "Edita o usuario selecionado, usando como parametro o id",
+                "operationId": "userUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Usuarios"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o usuario alterado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuariosWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/vendas-classe": {
+            "get": {
+                "tags": [
+                    "VendasClasse"
+                ],
+                "summary": "Retorna a lista de registro de vendas por classe",
+                "description": "Retorna a lista de registro de vendas por classe, usando como parametro de pesquisa o cnpj_empresa / codigo_classe / ano / mes / dia ",
+                "operationId": "totVendClassIndex",
+                "parameters": [
+                    {
+                        "name": "cnpj_empresa",
+                        "in": "query",
+                        "description": "Cnpj da empresa ao qual o registro pertence - orbigatorio",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "codigo_classe",
+                        "in": "query",
+                        "description": "Codigo da classe ao qual o registro pertence",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ano",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "mes",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando o campo |Ano| tambem esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dia",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de registros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasClasseWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "VendasClasse"
+                ],
+                "summary": "Insere o registro no sistema",
+                "description": "",
+                "operationId": "totVendClassStore",
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/VendasClasse"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna registro inserido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasClasseWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/vendas-classe/{id}": {
+            "get": {
+                "tags": [
+                    "VendasClasse"
+                ],
+                "summary": "Retorna o registro",
+                "description": "Retorna o registro, usando como parametro o id",
+                "operationId": "totVendClassShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasClasseWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "VendasClasse"
+                ],
+                "summary": "Edita o registro",
+                "description": "Edita o registro selecionado, usando como parametro o id",
+                "operationId": "totVendClassUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/VendasClasse"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro alterado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasClasseWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "VendasClasse"
+                ],
+                "summary": "Remove o registro",
+                "description": "Remove o registro selecionado, usando como parametro o id",
+                "operationId": "totVendClassDestroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registro excluido com sucesso"
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/vendas-vendedor": {
+            "get": {
+                "tags": [
+                    "VendasVendedor"
+                ],
+                "summary": "Retorna a lista de registro de vendas por vendedor",
+                "description": "Retorna a lista de registro de vendas por vendedor, usando como parametro de pesquisa o cnpj_empresa / codigo_vendedor / ano / mes / dia ",
+                "operationId": "totVendVendeIndex",
+                "parameters": [
+                    {
+                        "name": "cnpj_empresa",
+                        "in": "query",
+                        "description": "Cnpj da empresa ao qual o registro pertence - orbigatorio",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "codigo_vendedor",
+                        "in": "query",
+                        "description": "Codigo do vendedor ao qual o registro pertence",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ano",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "mes",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando o campo |Ano| tambem esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dia",
+                        "in": "query",
+                        "description": "Usado para pesquisa quando somente este campos esta preenchido",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de registros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasVendedorWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "VendasVendedor"
+                ],
+                "summary": "Insere o registro no sistema",
+                "description": "",
+                "operationId": "totVendVendeStore",
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/VendasVendedor"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna registro inserido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasVendedorWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                }
+            }
+        },
+        "/api/vendas-vendedor/{id}": {
+            "get": {
+                "tags": [
+                    "VendasVendedor"
+                ],
+                "summary": "Retorna o registro",
+                "description": "Retorna o registro, usando como parametro o id",
+                "operationId": "totVendVendeShow",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasVendedorWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "login nao autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "VendasVendedor"
+                ],
+                "summary": "Edita o registro",
+                "description": "Edita o registro selecionado, usando como parametro o id",
+                "operationId": "totVendVendeUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request Body Description",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/VendasVendedor"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o registro alterado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VendasVendedorWithDate"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "VendasVendedor"
+                ],
+                "summary": "Remove o registro",
+                "description": "Remove o registro selecionado, usando como parametro o id",
+                "operationId": "totVendVendeDestroy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registro excluido com sucesso"
+                    },
+                    "404": {
+                        "description": "Registro nao encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Empresas": {
+                "properties": {
+                    "id": {
+                        "description": "ID da empresa",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "cnpj": {
+                        "description": "Cnpj da empresa",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "razao": {
+                        "description": "Razao social da empresa",
+                        "type": "string",
+                        "example": "Wage Sistemas e Automacao",
+                        "nullable": false
+                    },
+                    "fantasia": {
+                        "description": "Nome fantasia da empresa",
+                        "type": "string",
+                        "example": "Wage Sistemas",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "EmpresasWithDate": {
+                "properties": {
+                    "id": {
+                        "description": "ID da empresa",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "cnpj": {
+                        "description": "Cnpj da empresa",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "razao": {
+                        "description": "Razao social da empresa",
+                        "type": "string",
+                        "example": "Wage Sistemas e Automacao",
+                        "nullable": false
+                    },
+                    "fantasia": {
+                        "description": "Nome fantasia da empresa",
+                        "type": "string",
+                        "example": "Wage Sistemas",
+                        "nullable": false
+                    },
+                    "created_at": {
+                        "description": "Data da criacao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "description": "Data da ultima alteracao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TotalVendas": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TotalVendasWithDate": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Data da criacao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "updated_at": {
+                        "description": "Data da ultima alteracao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "Usuarios": {
+                "properties": {
+                    "id": {
+                        "description": "ID do usuario",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "codigo_usuario": {
+                        "description": "Codigo do usuario no alfa",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "codigo_vendedor": {
+                        "description": "Codigo do vendedor no alfa",
+                        "type": "integer",
+                        "example": "2",
+                        "nullable": true
+                    },
+                    "nome": {
+                        "description": "Nome usuario no alfa",
+                        "type": "string",
+                        "example": "Usuario Teste",
+                        "nullable": false
+                    },
+                    "email": {
+                        "description": "Email usado para realizar login",
+                        "type": "string",
+                        "example": "teste@teste.com",
+                        "nullable": false
+                    },
+                    "password": {
+                        "description": "Senha de acesso a api",
+                        "type": "string",
+                        "example": "123456",
+                        "nullable": false
+                    },
+                    "senha_transacao": {
+                        "description": "Senha usada para transacoes na api, como liberacao remota",
+                        "type": "string",
+                        "example": "654321",
+                        "nullable": true
+                    },
+                    "ultimo_login": {
+                        "description": "Data do ultimo login no sistema",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "gerente": {
+                        "description": "Indica se o usuario e gerente",
+                        "type": "string",
+                        "example": "N",
+                        "nullable": true
+                    },
+                    "vendedor": {
+                        "description": "Indica se o usuario e vendedor",
+                        "type": "string",
+                        "example": "S",
+                        "nullable": true
+                    },
+                    "recebe_notificacao": {
+                        "description": "Indica se o usuario ira receber notificacao",
+                        "type": "string",
+                        "example": "N",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UsuariosWithDate": {
+                "properties": {
+                    "id": {
+                        "description": "ID do usuario",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "codigo_usuario": {
+                        "description": "Codigo do usuario no alfa",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "codigo_vendedor": {
+                        "description": "Codigo do vendedor no alfa",
+                        "type": "integer",
+                        "example": "2",
+                        "nullable": true
+                    },
+                    "nome": {
+                        "description": "Nome usuario no alfa",
+                        "type": "string",
+                        "example": "Usuario Teste",
+                        "nullable": false
+                    },
+                    "email": {
+                        "description": "Email usado para realizar login",
+                        "type": "string",
+                        "example": "teste@teste.com",
+                        "nullable": false
+                    },
+                    "password": {
+                        "description": "Senha de acesso a api",
+                        "type": "string",
+                        "example": "123456",
+                        "nullable": false
+                    },
+                    "senha_transacao": {
+                        "description": "Senha usada para transacoes na api, como liberacao remota",
+                        "type": "string",
+                        "example": "654321",
+                        "nullable": true
+                    },
+                    "ultimo_login": {
+                        "description": "Data do ultimo login no sistema",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "gerente": {
+                        "description": "Indica se o usuario e gerente",
+                        "type": "string",
+                        "example": "N",
+                        "nullable": true
+                    },
+                    "vendedor": {
+                        "description": "Indica se o usuario e vendedor",
+                        "type": "string",
+                        "example": "S",
+                        "nullable": true
+                    },
+                    "recebe_notificacao": {
+                        "description": "Indica se o usuario ira receber notificacao",
+                        "type": "string",
+                        "example": "N",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Data da criacao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "updated_at": {
+                        "description": "Data da ultima alteracao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "VendasClasse": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "codigo_classe": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "nome_classe": {
+                        "description": "",
+                        "type": "string",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "VendasClasseWithDate": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "codigo_classe": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "nome_classe": {
+                        "description": "",
+                        "type": "string",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Data da criacao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "updated_at": {
+                        "description": "Data da ultima alteracao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "VendasVendedor": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "codigo_vendedor": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "VendasVendedorWithDate": {
+                "properties": {
+                    "id": {
+                        "description": "ID do registro",
+                        "type": "integer",
+                        "example": "1",
+                        "nullable": false
+                    },
+                    "data": {
+                        "description": "",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "mes": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "12",
+                        "nullable": false
+                    },
+                    "ano": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "2025",
+                        "nullable": false
+                    },
+                    "cnpj_empresa": {
+                        "description": "",
+                        "type": "string",
+                        "example": "39311444000183",
+                        "nullable": false
+                    },
+                    "codigo_vendedor": {
+                        "description": "",
+                        "type": "integer",
+                        "example": "",
+                        "nullable": false
+                    },
+                    "vendas_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_desconto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "vendas_liquido": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_por_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_dif_venda": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "itens_quant_vendas": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_quant": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "devolucoes_taxa": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_produto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_servico": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_total": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "faturado_cmv": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_var": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "desp_fixo": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_contrib_perc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_bruto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "margem_bruta": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_estimado": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "lucro_pe": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "ticket_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_dinh": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_cheq": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_boleto": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_cred": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_c_deb": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_crediario": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_vale": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_depcc": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "tpag_pix": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "estoque_medio": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_incluidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_perdidos_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_faturados_valor": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "dav_taxa_conver": {
+                        "description": "",
+                        "type": "numeric",
+                        "example": "",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Data da criacao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    },
+                    "updated_at": {
+                        "description": "Data da ultima alteracao da empresa",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "description": "Authorization token obtained from logging in.",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Empresas",
+            "description": "Empresas"
+        },
+        {
+            "name": "TotalVendas",
+            "description": "TotalVendas"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Usuarios"
+        },
+        {
+            "name": "VendasClasse",
+            "description": "VendasClasse"
+        },
+        {
+            "name": "VendasVendedor",
+            "description": "VendasVendedor"
+        }
+    ]
+}
